@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文化祭 模擬裁判 2026 — さくら公園事件</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0a0a0a',
+            paper: '#f8f7f4',
+            mid: '#6b6b6b',
+            rule: '#d4d0c8',
+          },
+          fontFamily: {
+            serif:   ['"Noto Serif JP"', 'serif'],
+            display: ['"DM Serif Display"', 'serif'],
+            sans:    ['"Noto Sans JP"', 'sans-serif'],
+          },
+          fontSize: {
+            '8xl':  ['6rem',   { lineHeight: '1' }],
+            '9xl':  ['8rem',   { lineHeight: '1' }],
+            '10xl': ['10rem',  { lineHeight: '1' }],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* =========== RESET / BASE =========== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html  { scroll-behavior: smooth; }
+    body  { font-family: 'Noto Sans JP', sans-serif; background: #f8f7f4; color: #0a0a0a; overflow-x: hidden; }
+
+    /* =========== TYPOGRAPHY =========== */
+    .display-title {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+    .section-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #6b6b6b;
+    }
+
+    /* =========== NAV =========== */
+    #site-nav {
+      transition: border-color 0.3s, backdrop-filter 0.3s, background 0.3s;
+    }
+    #site-nav.scrolled {
+      background: rgba(248, 247, 244, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom-color: #d4d0c8;
+    }
+
+    /* =========== HERO =========== */
+    .hero-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(7rem, 22vw, 18rem);
+      line-height: 0.85;
+      color: #0a0a0a;
+      letter-spacing: -0.04em;
+      user-select: none;
+    }
+    .hero-verdict {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 900;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      letter-spacing: 0.15em;
+      color: #0a0a0a;
+    }
+
+    /* =========== SECTION DIVIDER =========== */
+    .hr-ink { border: none; border-top: 1px solid #0a0a0a; }
+    .hr-rule { border: none; border-top: 1px solid #d4d0c8; }
+
+    /* =========== CARDS =========== */
+    .mono-card {
+      border: 1px solid #0a0a0a;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .mono-card:hover {
+      box-shadow: 6px 6px 0 #0a0a0a;
+      transform: translate(-3px, -3px);
+    }
+    .light-card {
+      border: 1px solid #d4d0c8;
+      background: #ffffff;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .light-card:hover {
+      box-shadow: 4px 4px 0 #d4d0c8;
+      transform: translate(-2px, -2px);
+    }
+
+    /* =========== TAGS =========== */
+    .tag-ink {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: 1px solid #0a0a0a;
+      background: #0a0a0a;
+      color: #f8f7f4;
+    }
+    .tag-outline {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: 1px solid #0a0a0a;
+      color: #0a0a0a;
+      background: transparent;
+    }
+
+    /* =========== SCROLL ANIMATION =========== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* =========== MOBILE MENU =========== */
+    #mobile-menu {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s ease;
+      border-bottom: 1px solid transparent;
+    }
+    #mobile-menu.open {
+      max-height: 400px;
+      border-bottom-color: #d4d0c8;
+    }
+
+    /* =========== SCHEDULE TABLE =========== */
+    .schedule-row {
+      display: grid;
+      grid-template-columns: 120px 1px 1fr;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.8rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: background 0.15s;
+    }
+    .schedule-row:hover { background: rgba(255, 255, 255, 0.04); }
+    .schedule-row:last-child { border-bottom: none; }
+
+    /* =========== BUTTON =========== */
+    .btn-ink {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: #0a0a0a; color: #f8f7f4;
+      font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em;
+      padding: 0.9rem 2rem;
+      border: 1px solid #0a0a0a;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-ink:hover { background: #3a3a3a; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: #0a0a0a;
+      font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em;
+      padding: 0.9rem 2rem;
+      border: 1px solid #0a0a0a;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { background: #0a0a0a; color: #f8f7f4; }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     NAVIGATION
+================================================================ -->
+<nav id="site-nav" class="fixed top-0 left-0 right-0 z-50 border-b border-transparent bg-transparent px-6 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+    <!-- Logo -->
+    <a href="#top" class="flex items-center gap-3 group">
+      <span class="text-xl select-none">⚖</span>
+      <span class="font-serif font-bold text-sm text-ink tracking-wider">模擬裁判 2026</span>
+    </a>
+
+    <!-- Desktop links -->
+    <div class="hidden md:flex items-center gap-8 text-xs font-bold tracking-widest uppercase text-mid">
+      <a href="#about" class="hover:text-ink transition-colors">About</a>
+      <a href="scenario.html" class="hover:text-ink transition-colors">Scenario</a>
+      <a href="#schedule" class="hover:text-ink transition-colors">Schedule</a>
+      <a href="scenario.html" class="btn-ink text-xs py-2 px-5">シナリオ詳細を見る →</a>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button id="menu-btn" class="md:hidden p-2 text-ink" aria-label="メニュー">
+      <svg id="icon-open" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg id="icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="md:hidden bg-paper">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-3 text-xs font-bold tracking-widest uppercase text-mid">
+      <a href="#about" class="py-2 hover:text-ink transition-colors border-b border-rule">About</a>
+      <a href="scenario.html" class="py-2 hover:text-ink transition-colors border-b border-rule">Scenario</a>
+      <a href="#schedule" class="py-2 hover:text-ink transition-colors">Schedule</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ================================================================
+     HERO
+================================================================ -->
+<section id="top" class="min-h-screen flex flex-col justify-between pt-24 pb-12 px-6 overflow-hidden">
+  <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center">
+
+    <!-- Top meta row -->
+    <div class="flex flex-wrap items-center gap-4 mb-12 reveal">
+      <span class="tag-ink">文化祭 2026</span>
+      <span class="tag-outline">体験型模擬裁判</span>
+      <span class="section-eyebrow ml-auto hidden sm:block">2026.10.31 SAT 09:30 - 11:15</span>
+    </div>
+
+    <!-- Giant year number -->
+    <div class="relative mb-8 reveal" style="transition-delay:0.05s">
+      <div class="hero-number select-none opacity-[0.06] absolute -top-8 left-0 pointer-events-none leading-none">
+        2026
+      </div>
+      <!-- Vertical writing -->
+      <div class="absolute right-0 top-0 hidden lg:flex flex-col items-end gap-4">
+        <p class="hero-verdict">有罪か</p>
+        <p class="hero-verdict" style="opacity:.35">無罪か</p>
+      </div>
+
+      <h1 class="display-title text-ink">
+        <span class="block text-4xl sm:text-6xl lg:text-7xl leading-tight">裁判の行方を</span>
+        <span class="block text-5xl sm:text-7xl lg:text-9xl text-ink" style="letter-spacing:-0.03em;">決めるのは、</span>
+        <span class="block text-6xl sm:text-8xl lg:text-10xl italic" style="font-style:italic; color:#0a0a0a;">あなただ。</span>
+      </h1>
+    </div>
+
+    <hr class="hr-rule my-8 reveal" style="transition-delay:0.1s" />
+
+    <!-- Info row -->
+    <div class="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 reveal" style="transition-delay:0.15s">
+      <div>
+        <p class="section-eyebrow mb-1">Date &amp; Time</p>
+        <p class="font-serif font-bold text-xl">2026年10月31日（土）9:30〜11:15</p>
+      </div>
+      <div class="hidden sm:block w-px h-10 bg-rule"></div>
+      <div>
+        <p class="section-eyebrow mb-1">Program</p>
+        <p class="font-serif font-bold text-xl">体験型模擬裁判「さくら公園事件」</p>
+      </div>
+      <div class="hidden sm:block w-px h-10 bg-rule"></div>
+      <div>
+        <p class="section-eyebrow mb-1">Venue</p>
+        <p class="font-serif font-bold text-xl">多目的ホール / 各教室</p>
+      </div>
+
+      <!-- CTA -->
+      <div class="flex flex-wrap gap-3 sm:ml-auto mt-2 sm:mt-0">
+        <a href="scenario.html" class="btn-ink">シナリオを見る →</a>
+        <a href="#schedule" class="btn-outline">スケジュール →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom scroll hint -->
+  <div class="max-w-7xl mx-auto w-full mt-16 flex items-center gap-3 text-mid">
+    <div class="w-8 h-px bg-mid"></div>
+    <span class="section-eyebrow">Scroll to explore</span>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     ABOUT
+================================================================ -->
+<section id="about" class="py-32 px-6 bg-ink text-paper">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Eyebrow -->
+    <p class="section-eyebrow text-paper/40 mb-8 reveal">01 — About</p>
+    <hr class="border-paper/10 mb-16 reveal" />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+      <!-- Left: Big text -->
+      <div class="reveal">
+        <h2 class="display-title text-5xl sm:text-6xl lg:text-7xl text-paper mb-8 leading-tight">
+          企画概要<br />みどころ
+        </h2>
+        <p class="text-paper/50 text-sm leading-relaxed max-w-sm mb-8">
+          Overview — A participatory courtroom experience based on Japan's judicial system.
+        </p>
+        <div class="space-y-6 text-paper/85 text-base leading-loose font-light">
+          <p>
+            本企画は、千葉県弁護士会法教育委員会の教材を元に、文化祭用に脚色された<strong class="text-paper font-bold">参加型の体験型模擬裁判</strong>です。来場者の皆さんは「探偵事務所の調査員」として事件の調査依頼を受け、現場検証や目撃証言の聴取を経て、自らの判断で事件の真相に迫ります。
+          </p>
+          <p class="text-paper/70 text-sm leading-loose">
+            各教室を巡り、矛盾する2人の目撃証言や被告人の供述を比較・検証。最後の法廷で下される判決と、あなたが導き出した推理を対比するスリリングな法廷体験をお届けします。
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Image with magnifying glass -->
+      <div class="reveal border border-paper/20 p-3 bg-white/5 relative" style="transition-delay:0.1s">
+        <img src="./atelierbyvineeth-sEutjfyS3bc-unsplash.jpg" alt="事件の調査と現場検証" class="w-full h-80 sm:h-96 object-cover grayscale contrast-125 opacity-90" />
+        <div class="absolute bottom-6 left-6 right-6 p-4 bg-ink/90 border border-paper/20 backdrop-blur-md">
+          <p class="section-eyebrow text-paper/40 mb-1">Investigation</p>
+          <p class="font-serif font-bold text-sm text-paper">「何を見たのか」と「どう考えたのか」を分ける</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-20">
+      <div class="border border-paper/20 p-8 reveal hover:border-paper/60 transition-colors" style="transition-delay:0.05s">
+        <div class="text-4xl mb-6">🔍</div>
+        <h3 class="font-serif font-bold text-xl text-paper mb-3">探偵として現場を捜査</h3>
+        <p class="text-paper/50 text-sm leading-relaxed">調査プリントを受け取り、現場検証や証拠品を確認しながら証言の矛盾を突き止めます。</p>
+      </div>
+      <div class="border border-paper/20 p-8 reveal hover:border-paper/60 transition-colors" style="transition-delay:0.1s">
+        <div class="text-4xl mb-6">👥</div>
+        <h3 class="font-serif font-bold text-xl text-paper mb-3">食い違う2つの目撃証言</h3>
+        <p class="text-paper/50 text-sm leading-relaxed">「夫が強く突き落とした」とする林証言と、「妻が誤って転落した」とする高橋証言。信じるべきはどちらか。</p>
+      </div>
+      <div class="border border-paper/20 p-8 reveal hover:border-paper/60 transition-colors" style="transition-delay:0.15s">
+        <div class="text-4xl mb-6">⚖️</div>
+        <h3 class="font-serif font-bold text-xl text-paper mb-3">法廷での運命の判決</h3>
+        <p class="text-paper/50 text-sm leading-relaxed">被告人・山田太郎に殺意はあったのか、それとも悲痛な事故だったのか。法廷劇にて判決が下されます。</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SCENARIO PREVIEW
+================================================================ -->
+<section id="scenario" class="py-32 px-6 bg-paper">
+  <div class="max-w-7xl mx-auto">
+
+    <p class="section-eyebrow mb-8 reveal">02 — Scenario</p>
+    <hr class="hr-rule mb-16 reveal" />
+
+    <!-- Case heading + intro -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-24">
+      <div class="lg:col-span-5 reveal">
+        <div class="flex flex-wrap gap-2 mb-8">
+          <span class="tag-ink">殺人罪（刑法第199条）</span>
+          <span class="tag-outline">令和8年5月25日</span>
+          <span class="tag-outline">千葉市中央区桜ヶ丘</span>
+        </div>
+        <h2 class="display-title text-5xl sm:text-6xl text-ink leading-tight mb-8">
+          さくら公園<br />転落死亡事件
+        </h2>
+        <div class="border border-rule p-2 bg-white">
+          <img src="./harshit-suryawanshi-VaxFyibS6bA-unsplash.jpg" alt="事件資料と記録" class="w-full h-56 object-cover grayscale opacity-85" />
+          <p class="text-[0.65rem] text-mid tracking-widest uppercase p-2 text-right">Case Evidence Archive</p>
+        </div>
+      </div>
+      <div class="lg:col-span-7 reveal space-y-6 lg:pt-8" style="transition-delay:0.1s">
+        <p class="text-lg text-mid leading-loose font-light">
+          令和8年5月25日午後5時00分頃、千葉市中央区桜ヶ丘の<strong class="text-ink font-semibold">さくら公園西側階段</strong>において、若年性認知症を患う<strong class="text-ink font-semibold">山田花子さん（当時62歳）</strong>が4メートル下の階段踊り場へ転落し、頭蓋骨骨折・脳挫傷により死亡しました。
+        </p>
+        <p class="text-mid leading-loose font-light">
+          5年間にわたり妻を献身的に介護してきた夫・<strong class="text-ink font-semibold">山田太郎（当時62歳・無職）</strong>が<strong class="text-ink font-semibold">殺人罪（刑法第199条）</strong>で起訴されています。
+        </p>
+        <!-- Link to full scenario page -->
+        <div class="pt-4">
+          <a href="scenario.html" class="btn-ink inline-flex items-center gap-3 text-base px-8 py-4">
+            シナリオの詳細を読む
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teaser: Key Dispute -->
+    <div class="mb-24 reveal">
+      <div class="border border-ink p-10 sm:p-16 bg-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-[0.04]"
+             style="background:url('./veer-mickey-shah-y13Sg2MLI40-unsplash.jpg') center/cover no-repeat;"></div>
+        <div class="relative z-10">
+          <p class="section-eyebrow mb-6">最大の争点 — Key Issue</p>
+          <p class="display-title text-2xl sm:text-3xl lg:text-4xl text-ink leading-snug">
+            「階段の最上段で出された夫の手は、<br />
+            妻を<span class="underline underline-offset-4 decoration-1">突き落とすための手</span>だったのか、<br />
+            それとも<span class="underline underline-offset-4 decoration-1">助けるための手</span>だったのか——」
+          </p>
+          <div class="mt-10">
+            <a href="scenario.html#key-issue" class="btn-outline inline-flex items-center gap-2">
+              争点・陳述要旨の詳細を見る →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Characters preview -->
+    <div>
+      <div class="flex items-baseline justify-between mb-12 reveal">
+        <h3 class="font-serif font-bold text-3xl sm:text-4xl text-ink">登場人物</h3>
+        <a href="scenario.html#characters" class="text-xs font-bold tracking-widest text-mid hover:text-ink transition-colors border-b border-rule pb-0.5">全員の詳しい証言を見る →</a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- 山田太郎 -->
+        <div class="light-card overflow-hidden reveal">
+          <div class="bg-[#f0ede8] h-48 flex items-center justify-center border-b border-rule p-4">
+            <img src="./スタンダードな人のアイコン素材.png" alt="山田太郎" class="h-36 w-auto object-contain" />
+          </div>
+          <div class="p-6">
+            <p class="section-eyebrow text-ink/40 mb-1">被告人</p>
+            <p class="font-serif font-bold text-xl text-ink">山田 太郎</p>
+            <p class="text-mid text-xs mb-4">やまだ たろう（62歳）</p>
+            <hr class="hr-rule mb-4" />
+            <ul class="space-y-2 text-xs text-ink/70 leading-relaxed">
+              <li><strong class="text-ink">職業：</strong>無職（元会社員）</li>
+              <li><strong class="text-ink">前科：</strong>前科・前歴なし</li>
+              <li><strong class="text-ink">主張：</strong>「自分から足を滑らせた妻を助けようとした」と一貫して否認</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 山田花子 -->
+        <div class="light-card overflow-hidden reveal" style="transition-delay:0.07s">
+          <div class="bg-[#f0ede8] h-48 flex items-center justify-center border-b border-rule p-4">
+            <img src="./女性の線画イラスト.png" alt="山田花子" class="h-36 w-auto object-contain" />
+          </div>
+          <div class="p-6">
+            <p class="section-eyebrow text-ink/40 mb-1">被害者</p>
+            <p class="font-serif font-bold text-xl text-ink">山田 花子</p>
+            <p class="text-mid text-xs mb-4">やまだ はなこ（享年62歳）</p>
+            <hr class="hr-rule mb-4" />
+            <ul class="space-y-2 text-xs text-ink/70 leading-relaxed">
+              <li><strong class="text-ink">状況：</strong>専業主婦。6年前に若年性認知症と診断</li>
+              <li><strong class="text-ink">日課：</strong>進行抑制のため夫と毎日散歩</li>
+              <li><strong class="text-ink">死因：</strong>転落による頭蓋骨骨折・脳挫傷</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 林千秋 -->
+        <div class="light-card overflow-hidden reveal" style="transition-delay:0.14s">
+          <div class="bg-[#f0ede8] h-48 flex items-center justify-center border-b border-rule p-4">
+            <img src="./若者の無料イラスト.png" alt="林千秋" class="h-36 w-auto object-contain" />
+          </div>
+          <div class="p-6">
+            <p class="section-eyebrow text-ink/40 mb-1">検察側目撃証人</p>
+            <p class="font-serif font-bold text-xl text-ink">林 千秋</p>
+            <p class="text-mid text-xs mb-4">はやし ちあき</p>
+            <hr class="hr-rule mb-4" />
+            <ul class="space-y-2 text-xs text-ink/70 leading-relaxed">
+              <li><strong class="text-ink">立場：</strong>事件の瞬間を目撃したとされる証人</li>
+              <li><strong class="text-ink">証言：</strong>被告が妻の身体を右手で強く突き落とす場面を目撃</li>
+              <li><strong class="text-ink">位置：</strong>検察側立証の主軸証拠</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 高橋三郎 -->
+        <div class="light-card overflow-hidden reveal" style="transition-delay:0.21s">
+          <div class="bg-[#f0ede8] h-48 flex items-center justify-center border-b border-rule p-4">
+            <img src="./サラリーマン.png" alt="高橋三郎" class="h-36 w-auto object-contain" />
+          </div>
+          <div class="p-6">
+            <p class="section-eyebrow text-ink/40 mb-1">弁護側目撃証人</p>
+            <p class="font-serif font-bold text-xl text-ink">高橋 三郎</p>
+            <p class="text-mid text-xs mb-4">たかはし さぶろう</p>
+            <hr class="hr-rule mb-4" />
+            <ul class="space-y-2 text-xs text-ink/70 leading-relaxed">
+              <li><strong class="text-ink">立場：</strong>転落現場を目撃したとされる証人</li>
+              <li><strong class="text-ink">証言：</strong>妻が自ら足を滑らせ転落し、夫が助けようと手を伸ばしていたと証言</li>
+              <li><strong class="text-ink">反論：</strong>検察側は証言の信用性に疑義を主張</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SCHEDULE (9:30 - 11:15)
+================================================================ -->
+<section id="schedule" class="py-32 px-6 bg-ink text-paper">
+  <div class="max-w-7xl mx-auto">
+
+    <p class="section-eyebrow text-paper/40 mb-8 reveal">03 — Schedule</p>
+    <hr class="border-paper/10 mb-16 reveal" />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- Left -->
+      <div class="reveal">
+        <h2 class="display-title text-5xl sm:text-6xl lg:text-7xl text-paper leading-tight mb-6">
+          開演<br />スケジュール
+        </h2>
+        <p class="text-paper/50 font-light text-lg mb-2">2026年10月31日（土）</p>
+        <p class="font-serif font-bold text-2xl text-paper mb-6">09:30 〜 11:15</p>
+        <p class="text-paper/40 text-sm leading-relaxed max-w-md">
+          探偵事務所への依頼から始まり、各教室での現場検証・証言聴取を経て、最後の法廷教室で判決を見届ける一連の体験プログラムです。
+        </p>
+      </div>
+
+      <!-- Right: table -->
+      <div class="reveal" style="transition-delay:0.1s">
+        <!-- Header -->
+        <div class="grid grid-cols-[120px_1px_1fr] gap-6 pb-4 border-b border-paper/20">
+          <span class="section-eyebrow text-paper/30">Time</span>
+          <span></span>
+          <span class="section-eyebrow text-paper/30">Phase &amp; Content</span>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="schedule-row">
+          <div>
+            <p class="font-serif font-bold text-xl text-paper">09:30</p>
+            <p class="text-paper/30 text-xs">〜 09:45</p>
+          </div>
+          <div class="w-px h-full bg-paper/10"></div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="tag-ink text-[0.6rem] px-2 py-0.5 border-paper/30 text-paper bg-white/10">1組</span>
+              <p class="font-semibold text-paper">導入と探偵への依頼（受付）</p>
+            </div>
+            <p class="text-paper/50 text-xs leading-relaxed">教室① 入口側にて受付・整理券確認。所長と助手より転落事件の概要説明を受け、調査プリントを受け取ります。</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="schedule-row">
+          <div>
+            <p class="font-serif font-bold text-xl text-paper">09:45</p>
+            <p class="text-paper/30 text-xs">〜 10:45</p>
+          </div>
+          <div class="w-px h-full bg-paper/10"></div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="tag-ink text-[0.6rem] px-2 py-0.5 border-paper/30 text-paper bg-white/10">2組〜5組</span>
+              <p class="font-semibold text-paper">現場検証 &amp; 証言・供述の聴取</p>
+            </div>
+            <p class="text-paper/50 text-xs leading-relaxed">
+              各教室を巡回：2組（現場検証・公園側）→ 3組（林千秋の目撃証言）→ 4組（山田太郎の供述）→ 5組（高橋三郎の目撃証言）。
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="schedule-row">
+          <div>
+            <p class="font-serif font-bold text-xl text-paper">10:45</p>
+            <p class="text-paper/30 text-xs">〜 11:15</p>
+          </div>
+          <div class="w-px h-full bg-paper/10"></div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="tag-ink text-[0.6rem] px-2 py-0.5 border-paper/30 text-paper bg-white/10">6組</span>
+              <p class="font-semibold text-paper">模擬裁判開廷・判決言渡</p>
+            </div>
+            <p class="text-paper/50 text-xs leading-relaxed">
+              法廷教室にて開廷。皆さんの推理と法廷で示される判断を突き合わせ、最終的な判決・理由が下されます。
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     FOOTER
+================================================================ -->
+<footer class="bg-ink text-paper py-20 px-6 border-t border-paper/10">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-2xl">⚖</span>
+          <span class="font-serif font-bold text-lg">模擬裁判 2026</span>
+        </div>
+        <p class="text-paper/40 text-sm leading-relaxed">文化祭 体験型模擬裁判「さくら公園事件」<br />シナリオ・登場人物は教材を元にしたフィクションです。</p>
+      </div>
+      <div>
+        <p class="section-eyebrow text-paper/30 mb-4">Event Info</p>
+        <p class="text-paper/70 text-sm leading-loose">
+          2026年10月31日（土）<br />
+          09:30 〜 11:15<br />
+          多目的ホール / 各教室
+        </p>
+      </div>
+      <div>
+        <p class="section-eyebrow text-paper/30 mb-4">Links</p>
+        <div class="flex flex-col gap-2 text-sm text-paper/60">
+          <a href="#about" class="hover:text-paper transition-colors">企画概要</a>
+          <a href="scenario.html" class="hover:text-paper transition-colors">シナリオ詳細</a>
+          <a href="#schedule" class="hover:text-paper transition-colors">スケジュール</a>
+        </div>
+      </div>
+    </div>
+    <hr class="border-paper/10 mb-8" />
+    <p class="text-paper/25 text-xs">© 2026 文化祭 模擬裁判実行委員会 / 千葉日本大学第一中学校 模擬裁判シナリオ</p>
+  </div>
+</footer>
+
+
+<!-- ================================================================
+     JAVASCRIPT
+================================================================ -->
+<script>
+  /* ---- Nav scroll effect ---- */
+  const nav = document.getElementById('site-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* ---- Mobile menu ---- */
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('icon-open');
+  const iconClose = document.getElementById('icon-close');
+  let menuOpen = false;
+
+  menuBtn.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    mobileMenu.classList.toggle('open', menuOpen);
+    iconOpen.classList.toggle('hidden', menuOpen);
+    iconClose.classList.toggle('hidden', !menuOpen);
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menuOpen = false;
+    mobileMenu.classList.remove('open');
+    iconOpen.classList.remove('hidden');
+    iconClose.classList.add('hidden');
+  }));
+
+  /* ---- Scroll reveal ---- */
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const delay = parseFloat(e.target.style.transitionDelay || '0') * 1000;
+      setTimeout(() => e.target.classList.add('in'), delay > 0 ? 0 : 0);
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
